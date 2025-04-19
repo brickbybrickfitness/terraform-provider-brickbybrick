@@ -145,6 +145,7 @@ func (p *brickbybrickProvider) Configure(ctx context.Context, req provider.Confi
 func (p *brickbybrickProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		NewExercisesDataSource,
+		NewStrategiesDataSource,
 	}
 }
 
@@ -152,5 +153,6 @@ func (p *brickbybrickProvider) DataSources(_ context.Context) []func() datasourc
 func (p *brickbybrickProvider) Resources(_ context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		NewExerciseResource,
+		NewStrategyResource,
 	}
 }

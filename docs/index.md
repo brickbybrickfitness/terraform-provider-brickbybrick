@@ -13,6 +13,7 @@ Interact with the BrickByBrick Fitness API via Terraform.
 ## Example Usage
 
 ```terraform
+
 variable "api_key" {
   type = string
 }

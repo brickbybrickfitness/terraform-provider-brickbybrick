@@ -1,3 +1,5 @@
+# Copyright (c) HashiCorp, Inc.
+
 variable "api_key" {
   type = string
 }

@@ -59,6 +59,8 @@ func (c *BrickByBrickClient) doRequest(req *http.Request, apiKey *string) ([]byt
 	return body, err
 }
 
+// MARK: - Exercises
+
 func (c *BrickByBrickClient) GetExercise(exerciseId string) (*Exercise, error) {
 	req, err := http.NewRequest("GET", fmt.Sprintf("https://mlsojdnlzcsczxwkeuwy.supabase.co/functions/v1/api/exercises/%s", exerciseId), nil)
 	if err != nil {
@@ -153,6 +155,109 @@ func (c *BrickByBrickClient) UpdateExercise(exerciseIdStr string, exercise Exerc
 
 func (c *BrickByBrickClient) DeleteExercise(exerciseIdStr string) error {
 	req, err := http.NewRequest("DELETE", fmt.Sprintf("https://mlsojdnlzcsczxwkeuwy.supabase.co/functions/v1/api/exercises/%s", exerciseIdStr), nil)
+	if err != nil {
+		return err
+	}
+	_, err = c.doRequest(req, nil)
+	return err
+}
+
+// MARK: - Strategies
+
+func (c *BrickByBrickClient) GetStrategies() ([]Strategy, error) {
+	req, err := http.NewRequest("GET", "https://mlsojdnlzcsczxwkeuwy.supabase.co/functions/v1/api/strategies", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := c.doRequest(req, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	strategies := []Strategy{}
+	err = json.Unmarshal(body, &strategies)
+	if err != nil {
+		return nil, err
+	}
+
+	return strategies, nil
+}
+
+func (c *BrickByBrickClient) GetStrategy(strategyId string) (*Strategy, error) {
+	req, err := http.NewRequest("GET", fmt.Sprintf("https://mlsojdnlzcsczxwkeuwy.supabase.co/functions/v1/api/strategies/%s", strategyId), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := c.doRequest(req, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	strategy := Strategy{}
+	err = json.Unmarshal(body, &strategy)
+	if err != nil {
+		return nil, err
+	}
+
+	return &strategy, nil
+}
+
+func (c *BrickByBrickClient) CreateStrategy(strategy CreateStrategyPayload) (*Strategy, error) {
+	rb, err := json.Marshal(strategy)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", "https://mlsojdnlzcsczxwkeuwy.supabase.co/functions/v1/api/strategies", strings.NewReader(string(rb)))
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := c.doRequest(req, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	createdStrategy := Strategy{}
+	err = json.Unmarshal(body, &createdStrategy)
+	if err != nil {
+		fmt.Println("Error when unmarshaling response into a strategy struct.")
+		return nil, err
+	}
+
+	return &createdStrategy, nil
+}
+
+func (c *BrickByBrickClient) UpdateStrategy(strategyIdStr string, strategy CreateStrategyPayload) (*Strategy, error) {
+	rb, err := json.Marshal(strategy)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", fmt.Sprintf("https://mlsojdnlzcsczxwkeuwy.supabase.co/functions/v1/api/strategies/%s", strategyIdStr), strings.NewReader(string(rb)))
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := c.doRequest(req, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	updatedStrategy := Strategy{}
+	err = json.Unmarshal(body, &updatedStrategy)
+	if err != nil {
+		fmt.Println("Error when unmarshaling response into a strategy struct.")
+		return nil, err
+	}
+
+	return &updatedStrategy, nil
+}
+
+func (c *BrickByBrickClient) DeleteStrategy(strategyIdStr string) error {
+	req, err := http.NewRequest("DELETE", fmt.Sprintf("https://mlsojdnlzcsczxwkeuwy.supabase.co/functions/v1/api/strategies/%s", strategyIdStr), nil)
 	if err != nil {
 		return err
 	}
