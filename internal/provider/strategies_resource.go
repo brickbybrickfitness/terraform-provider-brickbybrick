@@ -8,11 +8,15 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/float32validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int32validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -239,22 +243,42 @@ func (r *strategyResource) Schema(_ context.Context, _ resource.SchemaRequest, r
 			"display_name": schema.StringAttribute{
 				Required:    true,
 				Description: "The name of the strategy",
+				Validators: []validator.String{
+					stringvalidator.LengthAtLeast(1),
+					stringvalidator.LengthAtMost(64),
+				},
 			},
 			"overload_rate": schema.Float32Attribute{
 				Description: "The amount of resistance or weight to add (in lbs) to each rep per session.",
 				Required:    true,
+				Validators: []validator.Float32{
+					float32validator.AtLeast(0),
+					float32validator.AtMost(100),
+				},
 			},
 			"exercises_per_workout": schema.Int32Attribute{
 				Description: "The number of exercises that each workout should have.",
 				Required:    true,
+				Validators: []validator.Int32{
+					int32validator.AtLeast(1),
+					int32validator.AtMost(100),
+				},
 			},
 			"target_sets_per_exercise": schema.Int32Attribute{
 				Description: "The goal for the number of sets you eventually want to do for each exercise in a workout.",
 				Required:    true,
+				Validators: []validator.Int32{
+					int32validator.AtLeast(1),
+					int32validator.AtMost(10000),
+				},
 			},
 			"target_reps_per_set": schema.Int32Attribute{
 				Description: "The goal for the number of reps that you eventually want to do in a set.",
 				Required:    true,
+				Validators: []validator.Int32{
+					int32validator.AtLeast(1),
+					int32validator.AtMost(100000),
+				},
 			},
 		},
 	}
